@@ -6,6 +6,7 @@ import { TmpUserSchema } from 'src/shared/schemas/tmp-user.schema';
 import { UserSchema } from 'src/shared/schemas/user.schema';
 
 import { AuthService } from './auth.service';
+import { NodemailerService } from './email/nodemailer.service';
 import { JwtStrategy } from './strategies/jwt.strategy.service';
 
 @Module({
@@ -28,6 +29,7 @@ import { JwtStrategy } from './strategies/jwt.strategy.service';
       },
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, NodemailerService],
+  exports: [AuthService, NodemailerService],
 })
 export class AuthModule {}

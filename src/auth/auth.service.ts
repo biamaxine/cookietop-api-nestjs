@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { Model } from 'mongoose';
 import { JwtPayload } from 'src/shared/interfaces/jwt.payload';
 import { TmpUser } from 'src/shared/schemas/tmp-user.schema';
@@ -29,6 +29,14 @@ export class AuthService {
     const user = await this.USERS.findById(payload.userId);
     if (!user) throw new UnauthorizedException('invalid token');
     return user;
+  }
+
+  payloadExtractor(token: string): JwtPayload {
+    const payload = verify(token, process.env.MAILER_SECRET);
+    if (typeof payload === 'object' && payload !== null && 'userId' in payload)
+      return payload as JwtPayload;
+
+    throw new UnauthorizedException('invalid token.');
   }
 
   returnJwtExtractor(): (req: Request) => string {

@@ -1,9 +1,10 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as morgan from 'morgan';
 
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { GetUserIdMiddleware } from './shared/middlewares/get-user-id.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,6 +24,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.use(new GetUserIdMiddleware().use);
 
   app.use(morgan('dev'));
 
